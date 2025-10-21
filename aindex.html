@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jerry Can Clan</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="game-container">
+    <div id="hud">
+      <div id="score">Score: 0</div>
+      <div id="timer">Time: 60</div>
+      <div id="contamination-meter">
+        <div id="contamination-fill"></div>
+      </div>
+    </div>
+
+    <div id="reticle"></div>
+
+    <div id="jerry-row">
+      <img src="img/jerrycan.png" class="jerry" alt="Jerry Can">
+      <img src="img/jerrycan.png" class="jerry" alt="Jerry Can">
+      <img src="img/jerrycan.png" class="jerry" alt="Jerry Can">
+      <img id="water-can" src="img/water-can.png" alt="Water Can">
+      <img src="img/jerrycan.png" class="jerry" alt="Jerry Can">
+    </div>
+
+    <div id="game-over">
+      <h1>Game Over</h1>
+      <p id="final-score"></p>
+      <button id="restart-btn">Restart</button>
+    </div>
+
+    <div id="start-screen">
+      <h1>Jerry Can Clan</h1>
+      <button id="start-btn">Start Game</button>
+    </div>
+  </div>
+
+  <audio id="zap-sound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
+  <audio id="hit-sound" src="https://actions.google.com/sounds/v1/impacts/crash.ogg" preload="auto"></audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
