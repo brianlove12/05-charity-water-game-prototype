@@ -5,7 +5,8 @@
 }
 
 body {
-  background: linear-gradient(to top, #6ec6ff, #e0f7fa);
+  /* Make the background a gradient from light brown at the top to darker brown at the bottom */
+  background: linear-gradient(to bottom, #543804 0%, #d2b48c 60%, #996735 100%);
   font-family: Arial, sans-serif;
   overflow: hidden;
 }
@@ -16,7 +17,8 @@ body {
   height: 90vh;
   overflow: hidden;
   border: 4px solid #0288d1;
-  background: #b3e5fc;
+  /* Change background to a light brown color */
+  background: #e7d3b2;
 }
 
 #hud {
@@ -88,8 +90,15 @@ body {
 }
 
 .jerry {
-  width: 50px;
+  width: 80px;   /* Default size for desktop screens */
   height: auto;
+}
+
+/* Shrink Jerry Can icons on small screens (phones/tablets) */
+@media (max-width: 600px) {
+  .jerry {
+    width: 40px; /* Smaller size for mobile screens */
+  }
 }
 
 .laser {
@@ -102,17 +111,33 @@ body {
 
 .contaminant {
   position: absolute;
-  width: 30px;
+  width: 30px;    /* Default size for desktop screens */
   height: 30px;
   border-radius: 50%;
   background: green;
   box-shadow: 0 0 10px rgba(0,255,0,0.6);
 }
 
+/* Shrink contaminants on small screens (phones/tablets) */
+@media (max-width: 600px) {
+  .contaminant {
+    width: 15px;  /* Smaller size for mobile screens */
+    height: 15px;
+  }
+}
+
 .split {
   width: 15px;
   height: 15px;
   background: lime;
+}
+
+/* Shrink split contaminants on small screens (phones/tablets) */
+@media (max-width: 600px) {
+  .split {
+    width: 8px;
+    height: 8px;
+  }
 }
 
 .hit {
@@ -155,4 +180,96 @@ body {
   left: auto;
   bottom: auto;
   z-index: 1;
+}
+
+/* Cartoon-style, animated "Jerry Can Clan" title */
+#start-screen h1 {
+  color: #ffe066; /* bright yellow */
+  font-family: 'Comic Sans MS', 'Comic Sans', 'Arial Rounded MT Bold', Arial, sans-serif; /* cartoon-like fonts */
+  font-size: 3.2rem;
+  font-weight: bold;
+  letter-spacing: 4px;
+  text-shadow:
+    2px 2px 0 #543804,
+    4px 4px 0 #d2b48c,
+    0 0 16px #ffd700,
+    0 0 32px #ffd700;
+  /* Bouncy animation */
+  animation: cartoon-bounce 1.5s infinite alternate, glow 2s infinite alternate;
+  margin-bottom: 30px;
+}
+
+/* Center the start screen content vertically and horizontally */
+#start-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* vertical center */
+  align-items: center;     /* horizontal center */
+  background: rgba(0,0,0,0.15); /* slight overlay for focus */
+  z-index: 10;
+}
+
+/* Fancy animated start button to match the cartoon style of the title */
+#start-btn {
+  background: linear-gradient(90deg, #ffe066, #ffd700, #ffea70, #ffe066);
+  background-size: 300% 100%;
+  color: #543804;
+  font-family: 'Comic Sans MS', 'Comic Sans', 'Arial Rounded MT Bold', Arial, sans-serif; /* cartoon-like fonts */
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 16px 40px;
+  border: none;
+  border-radius: 30px;
+  box-shadow: 0 4px 20px #ffd70080;
+  cursor: pointer;
+  margin-top: 30px;
+  letter-spacing: 2px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  animation: moveGradient 2s linear infinite, cartoon-bounce 1.5s infinite alternate;
+}
+
+/* Animated gradient effect for the button */
+@keyframes moveGradient {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+/* Button hover effect */
+#start-btn:hover {
+  transform: scale(1.08) rotate(-2deg);
+  box-shadow: 0 8px 32px #ffd700cc;
+  background: linear-gradient(90deg, #ffd700, #ffe066, #ffea70, #ffd700);
+  background-size: 300% 100%;
+  animation: moveGradient 1s linear infinite, cartoon-bounce 1.5s infinite alternate;
+}
+
+/* Bouncy cartoon animation */
+@keyframes cartoon-bounce {
+  0%   { transform: scale(1) rotate(-2deg) translateY(0); }
+  30%  { transform: scale(1.08, 0.95) rotate(2deg) translateY(-8px); }
+  60%  { transform: scale(0.97, 1.05) rotate(-2deg) translateY(4px); }
+  100% { transform: scale(1) rotate(2deg) translateY(0); }
+}
+
+/* Glowing effect for extra cartoon pop */
+@keyframes glow {
+  from {
+    text-shadow:
+      2px 2px 0 #543804,
+      4px 4px 0 #d2b48c,
+      0 0 16px #ffd700,
+      0 0 32px #ffd700;
+  }
+  to {
+    text-shadow:
+      2px 2px 0 #543804,
+      4px 4px 0 #d2b48c,
+      0 0 32px #ffe066,
+      0 0 64px #ffd700;
+  }
 }

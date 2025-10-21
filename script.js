@@ -89,28 +89,43 @@ function detectCollision(laser, move) {
 }
 
 // Contaminant logic
-function spawnContaminant() {
-  const cont = document.createElement('div');
-  cont.classList.add('contaminant');
-  cont.dataset.points = 50;
-  cont.style.left = Math.random() * (window.innerWidth - 30) + 'px';
-  cont.style.top = '0px';
-  gameContainer.appendChild(cont);
+let contaminants = [];
 
-  let speed = Math.random() * 3 + 2;
-  const fall = setInterval(() => {
-    if (!gameActive) clearInterval(fall);
-    const top = parseInt(cont.style.top);
-    if (top > window.innerHeight - 60) {
-      clearInterval(fall);
-      cont.remove();
-      contamination += 20;
-      contaminationFill.style.width = contamination + '%';
-      if (contamination >= 100) endGame();
-    } else {
-      cont.style.top = top + speed + 'px';
+// Function to spawn a contaminant (called during gameplay)
+function spawnContaminant() {
+  if (!gameActive) return;
+
+  const contaminant = document.createElement('div');
+  contaminant.classList.add('contaminant');
+  contaminant.dataset.points = 50; // <-- Add this line
+
+  // Set a random horizontal position
+  const leftPosition = Math.random() * (gameContainer.offsetWidth - 40);
+  contaminant.style.left = `${leftPosition}px`;
+
+  // Start at the very top of the game area
+  contaminant.style.top = `0px`;
+
+  // Add contaminant to the game container
+  gameContainer.appendChild(contaminant);
+
+  // Add to our contaminants array
+  contaminants.push(contaminant);
+
+  // Move the contaminant down the screen
+  let contaminantInterval = setInterval(() => {
+    // Get current top position
+    let currentTop = parseInt(contaminant.style.top);
+
+    // Move down by 3 pixels each frame
+    contaminant.style.top = `${currentTop + 3}px`;
+
+    // If contaminant reaches the bottom, remove it
+    if (currentTop + 40 >= gameContainer.offsetHeight) {
+      contaminant.remove();
+      clearInterval(contaminantInterval);
     }
-  }, 30);
+  }, 20);
 }
 
 function splitContaminant(original) {
@@ -172,19 +187,24 @@ const startBtn = document.getElementById('start-btn');
 
 // Hide game elements at the beginning
 gameContainer.querySelector('#hud').style.display = 'none';
-reticle.style.display = 'none';
-gameContainer.querySelector('#jerry-row').style.display = 'none';
+reticle.style.display = 'none'; // Jerry cans stay visible
 
-// Show game elements and start game when button is clicked
-startBtn.addEventListener('click', () => {
+// Function to start the game
+function startGame() {
+  // Show HUD and reticle
+  gameContainer.querySelector('#hud').style.display = '';
+  reticle.style.display = '';
+  // Hide start screen
   startScreen.style.display = 'none';
-  gameContainer.querySelector('#hud').style.display = 'flex';
-  reticle.style.display = 'block';
-  gameContainer.querySelector('#jerry-row').style.display = 'flex';
+  // Set game as active
   gameActive = true;
+  // Start spawning contaminants
   spawnInterval = setInterval(spawnContaminant, 1200);
   startTimer();
-});
+}
+
+// Listen for start button click
+startBtn.addEventListener('click', startGame);
 
 gameContainer.addEventListener('mousemove', (e) => {
   if (!gameActive) return; // Only move reticle when game is active
