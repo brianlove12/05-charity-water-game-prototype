@@ -1,22 +1,24 @@
 // Log a message to the console to ensure the script is linked correctly
 console.log('JavaScript file is linked correctly.');
 
+// Get DOM elements
 const gameContainer = document.getElementById('game-container');
 const reticle = document.getElementById('reticle');
 const scoreDisplay = document.getElementById('score');
 const timerDisplay = document.getElementById('timer');
-const contaminationFill = document.getElementById('contamination-fill');
 const gameOverScreen = document.getElementById('game-over');
 const finalScore = document.getElementById('final-score');
 const restartBtn = document.getElementById('restart-btn');
 const zapSound = document.getElementById('zap-sound');
 const hitSound = document.getElementById('hit-sound');
+const startScreen = document.getElementById('start-screen');
+const startBtn = document.getElementById('start-btn');
 
 let reticleX = window.innerWidth / 2;
 let reticleY = window.innerHeight / 2;
 let contamination = 0;
 let score = 0;
-let timeLeft = 60;
+let timeLeft = 30; // Set timer to 30 seconds
 let gameInterval, spawnInterval, timerInterval;
 let gameActive = false;
 
@@ -81,9 +83,14 @@ function detectCollision(laser, move) {
       laser.remove();
       cont.classList.add('hit');
       clearInterval(move);
-      setTimeout(() => cont.remove(), 200);
 
-      if (!cont.classList.contains('split')) splitContaminant(cont);
+      // Only split if not already split and not already hit
+      if (!cont.classList.contains('split') && !cont.classList.contains('already-split')) {
+        cont.classList.add('already-split'); // Mark as split
+        splitContaminant(cont);
+      }
+
+      setTimeout(() => cont.remove(), 200);
     }
   });
 }
@@ -128,15 +135,23 @@ function spawnContaminant() {
   }, 20);
 }
 
+// Function to split a contaminant into two pieces after being hit
 function splitContaminant(original) {
+  // Only split if it's not already a split piece
+  if (original.classList.contains('split')) return;
+
+  // Loop to create two split pieces
   for (let i = 0; i < 2; i++) {
     const mini = document.createElement('div');
     mini.classList.add('contaminant', 'split');
     mini.dataset.points = 25;
+
+    // Position the split pieces next to the original
     mini.style.left = (parseInt(original.style.left) + (i * 15)) + 'px';
     mini.style.top = original.style.top;
     gameContainer.appendChild(mini);
 
+    // Give each piece a random speed
     let speed = Math.random() * 4 + 3;
     const fall = setInterval(() => {
       if (!gameActive) clearInterval(fall);
@@ -145,8 +160,7 @@ function splitContaminant(original) {
         clearInterval(fall);
         mini.remove();
         contamination += 10;
-        contaminationFill.style.width = contamination + '%';
-        if (contamination >= 100) endGame();
+        // if (contamination >= 100) endGame(); // <-- Remove or comment out this line
       } else {
         mini.style.top = top + speed + 'px';
       }
@@ -154,13 +168,24 @@ function splitContaminant(original) {
   }
 }
 
-// Timer
+// Timer for 30 seconds (no red bar)
 function startTimer() {
+  let timeLeft = 30; // Start at 30 seconds
+
+  // Show the initial time
+  timerDisplay.textContent = `Time: ${timeLeft}`;
+
   timerInterval = setInterval(() => {
-    if (!gameActive) return;
-    timeLeft--;
+    // Update the timer display
     timerDisplay.textContent = `Time: ${timeLeft}`;
-    if (timeLeft <= 0) endGame();
+
+    // If timeLeft is 0, stop the timer and end the game
+    if (timeLeft === 0) {
+      clearInterval(timerInterval);
+      endGame();
+    }
+
+    timeLeft--; // Subtract after displaying and checking
   }, 1000);
 }
 
@@ -176,14 +201,6 @@ function endGame() {
 restartBtn.addEventListener('click', () => {
   location.reload();
 });
-
-// Start game
-spawnInterval = setInterval(spawnContaminant, 1200);
-startTimer();
-
-// Get elements for start screen
-const startScreen = document.getElementById('start-screen');
-const startBtn = document.getElementById('start-btn');
 
 // Hide game elements at the beginning
 gameContainer.querySelector('#hud').style.display = 'none';
@@ -206,6 +223,7 @@ function startGame() {
 // Listen for start button click
 startBtn.addEventListener('click', startGame);
 
+// Mouse movement for reticle
 gameContainer.addEventListener('mousemove', (e) => {
   if (!gameActive) return; // Only move reticle when game is active
 
@@ -221,3 +239,34 @@ gameContainer.addEventListener('mousemove', (e) => {
   reticle.style.left = `${reticleX}px`;
   reticle.style.top = `${reticleY}px`;
 });
+
+// Helper function to check if device is mobile
+function isMobile() {
+  return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
+// On mobile, allow aiming and firing by tapping the screen
+if (isMobile()) {
+  gameContainer.addEventListener('touchstart', (e) => {
+    if (!gameActive) return; // Only allow during gameplay
+
+    // Get the first touch point
+    const touch = e.touches[0];
+
+    // Get tap position relative to game container
+    const rect = gameContainer.getBoundingClientRect();
+    reticleX = touch.clientX - rect.left - reticle.offsetWidth / 2;
+    reticleY = touch.clientY - rect.top - reticle.offsetHeight / 2;
+
+    // Keep reticle inside game area
+    reticleX = Math.max(0, Math.min(gameContainer.offsetWidth - reticle.offsetWidth, reticleX));
+    reticleY = Math.max(0, Math.min(gameContainer.offsetHeight - reticle.offsetHeight, reticleY));
+
+    // Move reticle to tap position
+    reticle.style.left = `${reticleX}px`;
+    reticle.style.top = `${reticleY}px`;
+
+    // Fire laser from tap position
+    fireLaser();
+  });
+}

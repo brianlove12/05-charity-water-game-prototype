@@ -23,28 +23,25 @@ body {
 
 #hud {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;      /* Center all HUD content horizontally */
   align-items: center;
   padding: 10px;
   font-size: 1.2rem;
   background: rgba(0, 0, 0, 0.2);
   color: white;
+  gap: 40px;                    /* Add space between score and timer */
 }
 
-#contamination-meter {
-  width: 200px;
-  height: 20px;
-  background: rgba(255, 255, 255, 0.4);
-  border: 2px solid white;
-  border-radius: 10px;
-  overflow: hidden;
+/* Center the timer text specifically if needed */
+#timer {
+  text-align: center;
+  min-width: 100px;
 }
 
+/* Remove styles for the contamination meter and fill bar */
+#contamination-meter,
 #contamination-fill {
-  width: 0%;
-  height: 100%;
-  background: red;
-  transition: width 0.2s;
+  display: none;
 }
 
 #reticle {
