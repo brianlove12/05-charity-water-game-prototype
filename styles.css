@@ -270,3 +270,66 @@ body {
       0 0 64px #ffd700;
   }
 }
+
+/* Position the How To Play button on the left side of the start screen */
+#how-to-play-btn {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  transform: none;
+  display: inline-block;
+  padding: 10px 24px;
+  font-size: 1rem;
+  font-family: 'Comic Sans MS', 'Comic Sans', 'Arial Rounded MT Bold', Arial, sans-serif;
+  color: #543804;
+  background: linear-gradient(90deg, #ffe066, #ffd700, #ffea70, #ffe066);
+  background-size: 300% 100%;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px #ffd70055;
+  cursor: pointer;
+  transition: background 0.3s, box-shadow 0.2s;
+  font-weight: bold;
+  letter-spacing: 1px;
+  z-index: 21;
+}
+
+/* Position the How To Play box below the button, left-aligned */
+#how-to-play {
+  position: absolute;
+  top: 80px; /* Just below the button */
+  left: 30px;
+  transform: none;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 12px;
+  padding: 18px 24px;
+  margin: 0;
+  box-shadow: 0 2px 12px #54380433;
+  text-align: left;
+  max-width: 350px;
+  z-index: 20;
+  display: none; /* Hidden by default */
+}
+
+#how-to-play h2 {
+  color: #543804;
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+#how-to-play ul {
+  padding-left: 18px;
+  margin: 0;
+}
+
+#how-to-play li {
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+#how-to-play-btn:hover {
+  box-shadow: 0 0 16px 4px #ffd700, 0 4px 16px #ffe066aa;
+  background: linear-gradient(90deg, #ffd700, #ffe066, #ffea70, #ffd700);
+  color: #a67c52;
+}

@@ -8,6 +8,25 @@
 </head>
 <body>
   <div id="game-container">
+    <div id="start-screen">
+      <h1>Jerry Can Clan</h1>
+      <!-- How To Play button in the upper left -->
+      <button id="how-to-play-btn">How To Play</button>
+      <!-- How To Play box, hidden by default -->
+      <div id="how-to-play" style="display: none;">
+        <h2>How To Play</h2>
+        <ul>
+          <li>Use the touchpad to aim.</li>
+          <li>Press the spacebar to fire the laser.</li>
+          <li>On mobile, tap where you want to aim and fire.</li>
+          <li>Shoot contaminants before they reach the bottom.</li>
+          <li>Score points for every contaminant you hit!</li>
+          <li>The game lasts 30 seconds. Try for a high score!</li>
+        </ul>
+      </div>
+      <button id="start-btn">Start Game</button>
+    </div>
+
     <div id="hud">
       <div id="score">Score: 0</div>
       <div id="timer">Time: 30</div>
@@ -27,11 +46,6 @@
       <h1>Game Over</h1>
       <p id="final-score"></p>
       <button id="restart-btn">Restart</button>
-    </div>
-
-    <div id="start-screen">
-      <h1>Jerry Can Clan</h1>
-      <button id="start-btn">Start Game</button>
     </div>
   </div>
 

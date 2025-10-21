@@ -270,3 +270,17 @@ if (isMobile()) {
     fireLaser();
   });
 }
+
+// Beginner-friendly: Show/hide How To Play box when button is pressed
+const howToPlayBtn = document.getElementById('how-to-play-btn');
+const howToPlayBox = document.getElementById('how-to-play');
+
+// When the button is clicked, toggle the How To Play box
+howToPlayBtn.addEventListener('click', () => {
+  // If the box is hidden, show it. If shown, hide it.
+  if (howToPlayBox.style.display === 'none') {
+    howToPlayBox.style.display = 'block';
+  } else {
+    howToPlayBox.style.display = 'none';
+  }
+});
