@@ -32,8 +32,9 @@
           <li>On mobile, tap where you want to aim and fire.</li>
           <li>Shoot contaminants before they reach the Jerry Cans.</li>
           <li>Score points for every contaminant you hit!</li>
-          <li>Lose points for every contaminant that reaches the Jerry Cans.</li>
+          <li>Lose points for every contaminant that touches the Jerry Cans.</li>
           <li>The game ends when the timer reaches zero.</li>
+          <li>You win if the Water Purity Level stays above 70%.</li>
           <li>The game lasts 30 seconds. Try for a high score!</li>
         </ul>
       </div>
@@ -41,10 +42,13 @@
     </div>
 
     <div id="hud">
-  <div id="score">Score: 0</div>
-  <div id="timer">Time: 30</div>
-  <div id="contam-status">Contamination Level: 100% Safe</div>
-  <button id="pause-btn">Pause</button>
+        <div id="high-score">High Score: 0</div>
+        <div id="center-hud">
+          <div id="score">Score: 0</div>
+          <div id="timer">Time: 30</div>
+        </div>
+        <div id="contam-status">Water Purity Level: 100% Safe</div>
+        <button id="pause-btn">Pause</button>
     </div>
 
     <div id="reticle"></div>
