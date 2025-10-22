@@ -60,6 +60,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 // Get DOM elements
+const contamStatus = document.getElementById('contam-status');
 const gameContainer = document.getElementById('game-container');
 const reticle = document.getElementById('reticle');
 // Hide reticle on start screen
@@ -74,6 +75,8 @@ const hitSound = document.getElementById('hit-sound');
 const startScreen = document.getElementById('start-screen');
 const startBtn = document.getElementById('start-btn');
 const hud = document.getElementById('hud'); // Add this for HUD
+const contaminationFill = document.getElementById('contamination-fill');
+const contaminationMeter = document.getElementById('contamination-meter');
 
 let reticleX = window.innerWidth / 2;
 let reticleY = window.innerHeight / 2;
@@ -82,8 +85,10 @@ let score = 0;
 let timeLeft = 30; // Set timer to 30 seconds
 let gameInterval, spawnInterval, timerInterval;
 let gameActive = false;
+let contaminationLevel = 0; // 0 (safe) to 100 (toxic)
+let contaminationPercent = 100; // 100% safe
 
-// Move reticle with arrow keys
+// Move reticle with arrow keys and fire laser with spacebar (only once per press)
 document.addEventListener('keydown', (e) => {
   if (!gameActive) return;
   const step = 20;
@@ -98,7 +103,10 @@ document.addEventListener('keydown', (e) => {
   reticle.style.left = `${reticleX}px`;
   reticle.style.top = `${reticleY}px`;
 
-  if (e.code === 'Space') fireLaser();
+  // Only fire once per spacebar press
+  if (e.code === 'Space' && !e.repeat) {
+    fireLaser();
+  }
 });
 
 // Make reticle responsive to mouse/touchpad movement
@@ -222,6 +230,24 @@ function spawnContaminant() {
         if (gameActive) {
           score -= penalty;
           scoreDisplay.textContent = `Score: ${score}`;
+          // Drop contamination percent
+          if (contaminant.classList.contains('split')) {
+            contaminationPercent -= 3;
+          } else {
+            contaminationPercent -= 5;
+          }
+          contaminationPercent = Math.max(0, contaminationPercent);
+          // Change color and text based on contaminationPercent
+          if (contaminationPercent >= 80) {
+            contamStatus.textContent = `Contamination Level: ${contaminationPercent}% Safe`;
+            contamStatus.style.color = '#2ecc40'; // green
+          } else if (contaminationPercent >= 70 && contaminationPercent < 80) {
+            contamStatus.textContent = `Contamination Level: ${contaminationPercent}% Danger`;
+            contamStatus.style.color = '#ffe066'; // yellow
+          } else {
+            contamStatus.textContent = `Contamination Level: ${contaminationPercent}% Toxic`;
+            contamStatus.style.color = '#ff4136'; // red
+          }
         }
 
         // Show "-100" or "-50" above the Jerry Can
@@ -303,6 +329,19 @@ function splitContaminant(original) {
           // Reduce score by 50 points for split pieces
           score -= 50;
           scoreDisplay.textContent = `Score: ${score}`;
+          // Drop contamination percent for split piece
+          contaminationPercent -= 3;
+          contaminationPercent = Math.max(0, contaminationPercent);
+          if (contaminationPercent >= 80) {
+            contamStatus.textContent = `Contamination Level: ${contaminationPercent}% Safe`;
+            contamStatus.style.color = '#2ecc40';
+          } else if (contaminationPercent >= 70 && contaminationPercent < 80) {
+            contamStatus.textContent = `Contamination Level: ${contaminationPercent}% Danger`;
+            contamStatus.style.color = '#ffe066';
+          } else {
+            contamStatus.textContent = `Contamination Level: ${contaminationPercent}% Toxic`;
+            contamStatus.style.color = '#ff4136';
+          }
 
           // Show "-50" above the Jerry Can
           const minus50 = document.createElement('div');
@@ -400,14 +439,26 @@ howToPlayBtn.addEventListener('click', () => {
   }
 });
 
+// Call this function whenever a Jerry Can is hit
+function updateContamination(amount) {
+  contaminationLevel += amount;
+  contaminationLevel = Math.max(0, Math.min(100, contaminationLevel));
+  contaminationFill.style.width = `${contaminationLevel}%`;
+}
+
 // Show game elements when game starts
 startBtn.addEventListener('click', () => {
+  // Reset contamination percent
+  contaminationPercent = 100;
+  contamStatus.textContent = `Contamination Level: 100% Safe`;
+  contamStatus.style.color = '#2ecc40'; // green
   // Hide start screen
   startScreen.style.display = 'none';
-  // Show HUD, pause button, and reticle
+  // Show HUD, pause button, reticle, and contamination meter
   hud.style.display = 'flex';
-  pauseBtn.style.display = 'inline-block'; // Show pause button when game starts
-  reticle.style.display = 'block'; // Show reticle when game starts
+  pauseBtn.style.display = 'inline-block';
+  reticle.style.display = 'block';
+  contaminationMeter.style.display = 'flex'; // Show contamination bar
   // Start game logic
   gameActive = true;
   score = 0;
@@ -419,19 +470,146 @@ startBtn.addEventListener('click', () => {
   startTimer();
 });
 
-// Hide HUD, pause button, and reticle on game over
+// Hide HUD, pause button, reticle, and contamination meter on game over
 function endGame() {
   gameActive = false;
   hud.style.display = 'none';
   pauseBtn.style.display = 'none';
-  reticle.style.display = 'none'; // Hide reticle on game over
+  reticle.style.display = 'none';
+  contaminationMeter.style.display = 'none'; // Hide contamination bar
   gameOverScreen.style.display = 'block';
   finalScore.textContent = `Final Score: ${score}`;
+  // Show win/lose message based on contamination status
+  if (contamStatus.textContent.includes('Toxic')) {
+    gameOverScreen.querySelector('h1').textContent = 'You Lose! The Water Is Undrinkable!';
+    // Show random skull & crossbone, vomit, and tombstone emoji popups
+    const toxicEmojis = ['&#9760;', '🤮', '🪦'];
+    let toxicContainer = document.getElementById('toxic-icons');
+    if (!toxicContainer) {
+      toxicContainer = document.createElement('div');
+      toxicContainer.id = 'toxic-icons';
+      toxicContainer.style.position = 'fixed';
+      toxicContainer.style.top = '0';
+      toxicContainer.style.left = '0';
+      toxicContainer.style.width = '100vw';
+      toxicContainer.style.height = '100vh';
+      toxicContainer.style.pointerEvents = 'none';
+      toxicContainer.style.zIndex = '1001';
+      document.body.appendChild(toxicContainer);
+    } else {
+      toxicContainer.innerHTML = '';
+    }
+    for (let i = 0; i < 14; i++) {
+      const toxic = document.createElement('div');
+      toxic.innerHTML = toxicEmojis[Math.floor(Math.random() * toxicEmojis.length)];
+      toxic.style.position = 'absolute';
+      toxic.style.fontSize = '2.5rem';
+      toxic.style.color = '#ff4136';
+      toxic.style.left = Math.random() * (window.innerWidth - 60) + 'px';
+      toxic.style.top = Math.random() * (window.innerHeight - 120) + 'px';
+      toxic.style.pointerEvents = 'none';
+      toxicContainer.appendChild(toxic);
+    }
+  } else {
+    // Show confetti splashes and happy face emojis for Safe or Danger
+    let confettiContainer = document.getElementById('confetti-icons');
+    if (!confettiContainer) {
+      confettiContainer = document.createElement('div');
+      confettiContainer.id = 'confetti-icons';
+      confettiContainer.style.position = 'fixed';
+      confettiContainer.style.top = '0';
+      confettiContainer.style.left = '0';
+      confettiContainer.style.width = '100vw';
+      confettiContainer.style.height = '100vh';
+      confettiContainer.style.pointerEvents = 'none';
+      confettiContainer.style.zIndex = '1001';
+      document.body.appendChild(confettiContainer);
+    } else {
+      confettiContainer.innerHTML = '';
+    }
+    // Add confetti splashes
+    for (let i = 0; i < 16; i++) {
+      const confetti = document.createElement('div');
+      confetti.style.position = 'absolute';
+      confetti.style.width = '18px';
+      confetti.style.height = '18px';
+      confetti.style.borderRadius = '50%';
+      confetti.style.left = Math.random() * (window.innerWidth - 18) + 'px';
+      confetti.style.top = Math.random() * (window.innerHeight - 18) + 'px';
+      confetti.style.pointerEvents = 'none';
+      // Random confetti color
+      const colors = ['#ffe066', '#2ecc40', '#00bfff', '#ff4136', '#ff69b4', '#ffd700'];
+      confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.boxShadow = '0 0 12px 2px ' + confetti.style.background;
+      confettiContainer.appendChild(confetti);
+    }
+    // Add happy face emojis
+    const happyEmojis = ['😄', '😊', '🥳', '😁', '😃'];
+    for (let i = 0; i < 10; i++) {
+      const happy = document.createElement('div');
+      happy.innerHTML = happyEmojis[Math.floor(Math.random() * happyEmojis.length)];
+      happy.style.position = 'absolute';
+      happy.style.fontSize = '2.5rem';
+      happy.style.left = Math.random() * (window.innerWidth - 60) + 'px';
+      happy.style.top = Math.random() * (window.innerHeight - 120) + 'px';
+      happy.style.pointerEvents = 'none';
+      happy.style.color = '#ffe066';
+      confettiContainer.appendChild(happy);
+    }
+    // Set win message and effects for Safe or Danger
+    if (contamStatus.textContent.includes('Safe')) {
+      gameOverScreen.querySelector('h1').textContent = 'You Win! The Water Is Safe To Drink!';
+      // Animated water splashes for Safe
+      let splashContainer = document.getElementById('splash-icons');
+      if (!splashContainer) {
+        splashContainer = document.createElement('div');
+        splashContainer.id = 'splash-icons';
+        splashContainer.style.position = 'fixed';
+        splashContainer.style.top = '0';
+        splashContainer.style.left = '0';
+        splashContainer.style.width = '100vw';
+        splashContainer.style.height = '100vh';
+        splashContainer.style.pointerEvents = 'none';
+        splashContainer.style.zIndex = '1002';
+        document.body.appendChild(splashContainer);
+      } else {
+        splashContainer.innerHTML = '';
+      }
+      // Add animated water splashes
+      for (let i = 0; i < 14; i++) {
+        const splash = document.createElement('div');
+        splash.style.position = 'absolute';
+        splash.style.width = '44px';
+        splash.style.height = '44px';
+        splash.style.background = 'rgba(0,180,255,0.7)';
+        splash.style.borderRadius = '50%';
+        splash.style.left = Math.random() * (window.innerWidth - 44) + 'px';
+        splash.style.top = Math.random() * (window.innerHeight - 120) + 'px';
+        splash.style.pointerEvents = 'none';
+        splash.style.boxShadow = '0 0 24px 8px #00bfff88';
+        splash.style.animation = 'splash-pop 1.2s ease-out forwards';
+        splashContainer.appendChild(splash);
+      }
+      // Add splash-pop animation style if not present
+      if (!document.getElementById('splash-pop-style')) {
+        const style = document.createElement('style');
+        style.id = 'splash-pop-style';
+        style.textContent = `@keyframes splash-pop { 0% { transform: scale(0.5); opacity: 0.7; } 60% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }`;
+        document.head.appendChild(style);
+      }
+    } else {
+      gameOverScreen.querySelector('h1').textContent = 'You Win! The Water Is Drinkable, But Be Careful!';
+    }
+  }
   clearInterval(spawnInterval);
   clearInterval(timerInterval);
+// Add splash-pop animation for water celebration
+const style = document.createElement('style');
+style.textContent = `@keyframes splash-pop { 0% { transform: scale(0.5); opacity: 0.7; } 60% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }`;
+document.head.appendChild(style);
 }
 
-// Hide HUD, pause button, and reticle on restart
+// Hide HUD, pause button, reticle, and contamination meter on restart
 restartBtn.addEventListener('click', () => {
   location.reload();
 });
