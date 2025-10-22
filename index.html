@@ -8,6 +8,17 @@
 </head>
 <body>
   <div id="game-container">
+    
+    <!-- Pause menu overlay (hidden by default) -->
+    <div id="pause-menu" style="display: none;">
+      <div class="pause-box">
+        <h2>Game Paused</h2>
+        <div style="margin-bottom: 20px; font-size: 1.1rem;">Do you wish to continue or restart?</div>
+        <button id="continue-btn">Continue</button>
+        <button id="restart-btn-pause">Restart</button>
+      </div>
+    </div>
+
     <div id="start-screen">
       <h1>Jerry Can Clan</h1>
       <!-- How To Play button in the upper left -->
@@ -18,9 +29,12 @@
         <ul>
           <li>Use the touchpad to aim.</li>
           <li>Press the spacebar to fire the laser.</li>
+          <li>Hold the spacebar for Rapid Fire.</li>
           <li>On mobile, tap where you want to aim and fire.</li>
-          <li>Shoot contaminants before they reach the bottom.</li>
+          <li>Shoot contaminants before they reach the Jerry Cans.</li>
           <li>Score points for every contaminant you hit!</li>
+          <li>Lose points for every contaminant that reaches the Jerry Cans.</li>
+          <li>The game ends when the timer reaches zero.</li>
           <li>The game lasts 30 seconds. Try for a high score!</li>
         </ul>
       </div>
@@ -28,8 +42,9 @@
     </div>
 
     <div id="hud">
-      <div id="score">Score: 0</div>
-      <div id="timer">Time: 30</div>
+  <div id="score">Score: 0</div>
+  <div id="timer">Time: 30</div>
+  <button id="pause-btn">Pause</button>
     </div>
 
     <div id="reticle"></div>
