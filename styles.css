@@ -1,3 +1,18 @@
+/* Use a font similar to charity: water's brand guidelines (Montserrat, Arial, sans-serif) for all text */
+body, #game-container, #hud, #pause-menu, .pause-box, #start-screen, #how-to-play, #footer {
+  font-family: 'Montserrat', Arial, sans-serif;
+}
+
+/* If Montserrat is not available, Arial and sans-serif will be used as fallback fonts */
+
+/* You can add this to the top of your CSS file for clarity */
+
+body {
+  font-family:  'Montserrat', Arial, sans-serif;
+  overflow: hidden;
+  background: #e7d3b2;
+}
+
 #pause-menu {
   display: none;
   position: fixed;
@@ -138,10 +153,9 @@
 }
 
 body {
-  /* Make the background a gradient from light brown at the top to darker brown at the bottom */
-  background: linear-gradient(to bottom, #543804 0%, #d2b48c 60%, #996735 100%);
   font-family: Arial, sans-serif;
   overflow: hidden;
+  background: #e7d3b2; /* Use a simple color so only the SVG background is visible in #game-container */
 }
 
 #game-container {
@@ -149,9 +163,11 @@ body {
   width: 100%;
   height: 90vh;
   overflow: hidden;
-  border: 4px solid #0288d1;
-  /* Change background to a light brown color */
-  background: #e7d3b2;
+  border: 2px solid #0288d1;
+  background-image: url('img/scene_horizon11_sun092_huts_restored.svg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 
 #hud {
@@ -550,4 +566,24 @@ body {
   box-shadow: 0 0 16px 4px #ffd700, 0 4px 16px #ffe066aa;
   background: linear-gradient(90deg, #ffd700, #ffe066, #ffea70, #ffd700);
   color: #a67c52;
+}
+
+/* Simple footer styling for beginners */
+#footer {
+  width: 100%;
+  background: #7f5123; /* dark brown */
+  color: #fffbe8;      /* light text */
+  text-align: center;
+  font-size: 1.1rem;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 999;
+  padding: 12px 0;
+}
+
+#footer a {
+  color: #ffe066;
+  text-decoration: underline;
+  margin: 0 8px;
 }

@@ -5,10 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jerry Can Clan</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Make the SVG background fill the game area */
+    #game-container {
+      position: relative;
+      width: 100%;
+      height: 90vh;
+      overflow: hidden;
+      border: 4px solid #0288d1;
+      background-image: url('img/scene_horizon11_sun092_huts_restored.svg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center center;
+    }
+  </style>
+  <!-- Add Google Fonts link for Montserrat in the <head> section -->
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div id="game-container">
-    
     <!-- Pause menu overlay (hidden by default) -->
     <div id="pause-menu" style="display: none;">
       <div class="pause-box">
@@ -75,6 +90,16 @@
       <span id="toxic-label">Toxic</span>
     </div>
   </div>
+
+  <!-- Simple footer with charity: water links for beginners -->
+  <footer id="footer">
+    <div style="text-align: center; padding: 12px 0; background: #7f5123; color: #fffbe8; font-size: 1.1rem;">
+      Learn more or donate at
+      <a href="https://www.charitywater.org/" target="_blank" style="color: #ffe066; text-decoration: underline;">charity: water</a>
+      |
+      <a href="https://www.charitywater.org/donate" target="_blank" style="color: #ffe066; text-decoration: underline;">Donate</a>
+    </div>
+  </footer>
 
   <audio id="zap-sound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
   <audio id="hit-sound" src="https://actions.google.com/sounds/v1/impacts/crash.ogg" preload="auto"></audio>

@@ -196,6 +196,10 @@ function detectCollision(laser, move) {
 // Contaminant logic
 let contaminants = [];
 
+// The horizon line Y position (pixels from top of game container)
+// Adjust this value to visually match the straight base of the mountains in your SVG background (now in img folder)
+const HORIZON_Y = 220; // Raised to visually match the straight base of the mountains in the SVG background
+
 // Function to spawn a contaminant (called during gameplay)
 function spawnContaminant() {
   if (!gameActive) return;
@@ -208,7 +212,8 @@ function spawnContaminant() {
   // Set a random horizontal position
   const leftPosition = Math.random() * (gameContainer.offsetWidth - 40);
   contaminant.style.left = `${leftPosition}px`;
-  contaminant.style.top = `0px`;
+  // Spawn at the horizon line
+  contaminant.style.top = `${HORIZON_Y}px`;
 
   gameContainer.appendChild(contaminant);
   contaminants.push(contaminant);
@@ -403,12 +408,51 @@ function splitContaminant(original) {
   }
 }
 
+// Array of milestone messages for beginners
+const milestoneMessages = [
+  { time: 15, message: "Halfway there! 15 seconds left!" }
+];
+
+// Function to show milestone message
+function showMilestoneMessage(msg) {
+  // Create a simple message box at the top center
+  const milestoneBox = document.createElement('div');
+  milestoneBox.textContent = msg;
+  milestoneBox.style.position = 'absolute';
+  milestoneBox.style.top = '60px';
+  milestoneBox.style.left = '50%';
+  milestoneBox.style.transform = 'translateX(-50%)';
+  milestoneBox.style.background = '#ffe066';
+  milestoneBox.style.color = '#543804';
+  milestoneBox.style.fontSize = '1.3rem';
+  milestoneBox.style.fontWeight = 'bold';
+  milestoneBox.style.padding = '12px 32px';
+  milestoneBox.style.borderRadius = '16px';
+  milestoneBox.style.boxShadow = '0 2px 12px #54380433';
+  milestoneBox.style.zIndex = '999';
+  milestoneBox.style.textAlign = 'center';
+  document.body.appendChild(milestoneBox);
+
+  // Remove the message after 2 seconds
+  setTimeout(() => {
+    milestoneBox.remove();
+  }, 2000);
+}
+
 // Timer for 30 seconds (no red bar)
 function startTimer() {
   timerDisplay.textContent = `Time: ${timeLeft}`;
   timerInterval = setInterval(() => {
     timeLeft--;
     timerDisplay.textContent = `Time: ${timeLeft}`;
+
+    // Check for milestone messages
+    milestoneMessages.forEach(milestone => {
+      if (timeLeft === milestone.time) {
+        showMilestoneMessage(milestone.message);
+      }
+    });
+
     if (timeLeft <= 0) {
       clearInterval(timerInterval);
       endGame();
