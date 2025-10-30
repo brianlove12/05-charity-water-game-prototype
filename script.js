@@ -6,21 +6,22 @@ let spawnRate = 1200; // ms between contaminants
 let timerSeconds = 30;
 
 // Update difficulty when selected
+// Update difficulty when selected
 if (difficultySelect) {
   difficultySelect.addEventListener('change', () => {
     difficulty = difficultySelect.value;
     if (difficulty === 'easy') {
       winGoal = 60;
       spawnRate = 1600;
-      timerSeconds = 40;
+      timerSeconds = 20; // Easy: 20 seconds
     } else if (difficulty === 'normal') {
       winGoal = 70;
       spawnRate = 1200;
-      timerSeconds = 30;
+      timerSeconds = 30; // Normal: 30 seconds
     } else if (difficulty === 'hard') {
       winGoal = 80;
       spawnRate = 900;
-      timerSeconds = 20;
+      timerSeconds = 60; // Hard: 60 seconds
     }
   });
 }
@@ -546,15 +547,15 @@ startBtn.addEventListener('click', () => {
     if (difficulty === 'easy') {
       winGoal = 60;
       spawnRate = 1600;
-      timerSeconds = 40;
+      timerSeconds = 20; // Easy: 20 seconds
     } else if (difficulty === 'normal') {
       winGoal = 70;
       spawnRate = 1200;
-      timerSeconds = 30;
+      timerSeconds = 30; // Normal: 30 seconds
     } else if (difficulty === 'hard') {
       winGoal = 80;
       spawnRate = 900;
-      timerSeconds = 20;
+      timerSeconds = 60; // Hard: 60 seconds
     }
   }
   // Reset contamination percent
