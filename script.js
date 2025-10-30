@@ -1,3 +1,29 @@
+// Difficulty settings
+const difficultySelect = document.getElementById('difficulty-select');
+let difficulty = 'normal';
+let winGoal = 70; // percent needed to win
+let spawnRate = 1200; // ms between contaminants
+let timerSeconds = 30;
+
+// Update difficulty when selected
+if (difficultySelect) {
+  difficultySelect.addEventListener('change', () => {
+    difficulty = difficultySelect.value;
+    if (difficulty === 'easy') {
+      winGoal = 60;
+      spawnRate = 1600;
+      timerSeconds = 40;
+    } else if (difficulty === 'normal') {
+      winGoal = 70;
+      spawnRate = 1200;
+      timerSeconds = 30;
+    } else if (difficulty === 'hard') {
+      winGoal = 80;
+      spawnRate = 900;
+      timerSeconds = 20;
+    }
+  });
+}
 // Log a message to the console to ensure the script is linked correctly
 console.log('JavaScript file is linked correctly.');
 
@@ -514,6 +540,23 @@ function updateContamination(amount) {
 
 // Show game elements when game starts
 startBtn.addEventListener('click', () => {
+  // Set difficulty values
+  if (difficultySelect) {
+    difficulty = difficultySelect.value;
+    if (difficulty === 'easy') {
+      winGoal = 60;
+      spawnRate = 1600;
+      timerSeconds = 40;
+    } else if (difficulty === 'normal') {
+      winGoal = 70;
+      spawnRate = 1200;
+      timerSeconds = 30;
+    } else if (difficulty === 'hard') {
+      winGoal = 80;
+      spawnRate = 900;
+      timerSeconds = 20;
+    }
+  }
   // Reset contamination percent
   contaminationPercent = 100;
   contamStatus.textContent = `Water Purity Level: 100% Safe`;
@@ -531,10 +574,10 @@ startBtn.addEventListener('click', () => {
   scoreDisplay.textContent = `Score: ${score}`;
   // Show current high score
   highScoreDisplay.textContent = `High Score: ${highScore}`;
-  timeLeft = 30;
+  timeLeft = timerSeconds;
   timerDisplay.textContent = `Time: ${timeLeft}`;
   gameOverScreen.style.display = 'none';
-  spawnInterval = setInterval(spawnContaminant, 1200);
+  spawnInterval = setInterval(spawnContaminant, spawnRate);
   startTimer();
 });
 
@@ -588,37 +631,14 @@ function endGame() {
     document.head.appendChild(style);
   }
 
-  if (contamStatus.textContent.includes('Toxic')) {
-    gameOverScreen.querySelector('h1').textContent = 'You Lose! The Water Is Undrinkable!';
-  const toxicEmojis = ['&#9760;', '🤮', '🪦', '😷', '☠️', '🤢', '🥴', '🤧', '😵'];
-    let toxicContainer = document.getElementById('toxic-icons');
-    if (!toxicContainer) {
-      toxicContainer = document.createElement('div');
-      toxicContainer.id = 'toxic-icons';
-      toxicContainer.style.position = 'fixed';
-      toxicContainer.style.top = '0';
-      toxicContainer.style.left = '0';
-      toxicContainer.style.width = '100vw';
-      toxicContainer.style.height = '100vh';
-      toxicContainer.style.pointerEvents = 'none';
-      toxicContainer.style.zIndex = '1001';
-      document.body.appendChild(toxicContainer);
+  // Difficulty win condition
+  if (contaminationPercent >= winGoal) {
+    if (contamStatus.textContent.includes('Safe')) {
+      gameOverScreen.querySelector('h1').textContent = 'You Win! The Water Is Safe To Drink!';
     } else {
-      toxicContainer.innerHTML = '';
+      gameOverScreen.querySelector('h1').textContent = 'You Win! The Water Is Drinkable, But Be Careful!';
     }
-    for (let i = 0; i < 35; i++) {
-      const toxic = document.createElement('div');
-      toxic.innerHTML = toxicEmojis[Math.floor(Math.random() * toxicEmojis.length)];
-      toxic.style.position = 'absolute';
-      toxic.style.fontSize = '5rem';
-      toxic.style.color = '#ff4136';
-      toxic.style.left = Math.random() * (window.innerWidth - 60) + 'px';
-      toxic.style.top = Math.random() * (window.innerHeight - 120) + 'px';
-      toxic.style.pointerEvents = 'none';
-      toxic.style.animation = randomAnimation();
-      toxicContainer.appendChild(toxic);
-    }
-  } else {
+    // Confetti and happy faces
     let confettiContainer = document.getElementById('confetti-icons');
     if (!confettiContainer) {
       confettiContainer = document.createElement('div');
@@ -634,7 +654,6 @@ function endGame() {
     } else {
       confettiContainer.innerHTML = '';
     }
-    // Add confetti splashes
     for (let i = 0; i < 40; i++) {
       const confetti = document.createElement('div');
       confetti.style.position = 'absolute';
@@ -666,7 +685,6 @@ function endGame() {
     }
     // Animated water splashes for Safe
     if (contamStatus.textContent.includes('Safe')) {
-      gameOverScreen.querySelector('h1').textContent = 'You Win! The Water Is Safe To Drink!';
       let splashContainer = document.getElementById('splash-icons');
       if (!splashContainer) {
         splashContainer = document.createElement('div');
@@ -702,8 +720,36 @@ function endGame() {
         style.textContent = `@keyframes splash-pop { 0% { transform: scale(0.5); opacity: 0.7; } 60% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }`;
         document.head.appendChild(style);
       }
+    }
+  } else {
+    gameOverScreen.querySelector('h1').textContent = 'You Lose! The Water Is Undrinkable!';
+    const toxicEmojis = ['&#9760;', '🤮', '🪦', '😷', '☠️', '🤢', '🥴', '🤧', '😵'];
+    let toxicContainer = document.getElementById('toxic-icons');
+    if (!toxicContainer) {
+      toxicContainer = document.createElement('div');
+      toxicContainer.id = 'toxic-icons';
+      toxicContainer.style.position = 'fixed';
+      toxicContainer.style.top = '0';
+      toxicContainer.style.left = '0';
+      toxicContainer.style.width = '100vw';
+      toxicContainer.style.height = '100vh';
+      toxicContainer.style.pointerEvents = 'none';
+      toxicContainer.style.zIndex = '1001';
+      document.body.appendChild(toxicContainer);
     } else {
-      gameOverScreen.querySelector('h1').textContent = 'You Win! The Water Is Drinkable, But Be Careful!';
+      toxicContainer.innerHTML = '';
+    }
+    for (let i = 0; i < 35; i++) {
+      const toxic = document.createElement('div');
+      toxic.innerHTML = toxicEmojis[Math.floor(Math.random() * toxicEmojis.length)];
+      toxic.style.position = 'absolute';
+      toxic.style.fontSize = '5rem';
+      toxic.style.color = '#ff4136';
+      toxic.style.left = Math.random() * (window.innerWidth - 60) + 'px';
+      toxic.style.top = Math.random() * (window.innerHeight - 120) + 'px';
+      toxic.style.pointerEvents = 'none';
+      toxic.style.animation = randomAnimation();
+      toxicContainer.appendChild(toxic);
     }
   }
   clearInterval(spawnInterval);

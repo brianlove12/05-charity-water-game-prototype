@@ -49,11 +49,21 @@
           <li>Score points for every contaminant you hit!</li>
           <li>Lose points for every contaminant that touches the Jerry Cans.</li>
           <li>The game ends when the timer reaches zero.</li>
-          <li>You win if the Water Purity Level stays above 70%.</li>
-          <li>The game lasts 30 seconds. Try for a high score!</li>
+          <li>You win if the Water Purity Level stays above the win goal for your difficulty.</li>
+          <li>Choose a difficulty mode for a new challenge!</li>
         </ul>
       </div>
       <button id="start-btn">Start Game</button>
+  <!-- Redesigned difficulty mode box for better game integration -->
+  <!-- Difficulty mode box, now positioned in the upper right corner of the start screen -->
+  <div id="difficulty-mode-box" class="difficulty-corner">
+    <label for="difficulty-select" id="difficulty-label">Difficulty:</label>
+    <select id="difficulty-select">
+      <option value="easy">Easy</option>
+      <option value="normal" selected>Normal</option>
+      <option value="hard">Hard</option>
+    </select>
+  </div>
     </div>
 
     <div id="hud">
@@ -106,4 +116,87 @@
 
   <script src="script.js"></script>
 </body>
+<style>
+  /* Move the difficulty mode box to the upper right during the start screen */
+  #difficulty-mode-box.difficulty-corner {
+    position: absolute;
+    top: 100px;
+    right: 32px;
+    margin: 0;
+    z-index: 30;
+    /* Keep the rest of the style for blending in */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 18px 32px;
+    background: linear-gradient(90deg, #ffe066cc 60%, #fffbe8cc 100%);
+    border-radius: 22px;
+    box-shadow: 0 4px 18px #54380422, 0 1.5px 0 #ffd700;
+    border: 2.5px solid #ffd700;
+    font-family: 'Comic Sans MS', 'Comic Sans', 'Arial Rounded MT Bold', Arial, sans-serif;
+    font-size: 1.2rem;
+    gap: 18px;
+    width: fit-content;
+    margin-bottom: 0;
+  }
+  /* Only show the difficulty box on the start screen */
+  #start-screen ~ #difficulty-mode-box,
+  #difficulty-mode-box:not(.difficulty-corner) {
+    display: none !important;
+  }
+  /* Show when on start screen */
+  #start-screen[style*="display: flex"] ~ #difficulty-mode-box.difficulty-corner,
+  #start-screen:not([style*="display: none"]) ~ #difficulty-mode-box.difficulty-corner {
+    display: flex !important;
+  }
+</style>
+<style>
+  /* Redesigned difficulty mode box styles */
+  #difficulty-mode-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 48px 0 0 0;
+    padding: 18px 32px;
+    background: linear-gradient(90deg, #ffe066cc 60%, #fffbe8cc 100%);
+    border-radius: 22px;
+    box-shadow: 0 4px 18px #54380422, 0 1.5px 0 #ffd700;
+    border: 2.5px solid #ffd700;
+    font-family: 'Comic Sans MS', 'Comic Sans', 'Arial Rounded MT Bold', Arial, sans-serif;
+    font-size: 1.2rem;
+    gap: 18px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0;
+    z-index: 12;
+  }
+  #difficulty-label {
+    color: #543804;
+    font-weight: bold;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    margin-right: 8px;
+    text-shadow: 1px 1px 0 #ffe066, 0 0 8px #ffd70088;
+  }
+  #difficulty-select {
+    font-size: 1.1rem;
+    padding: 7px 22px;
+    border-radius: 12px;
+    border: 2px solid #ffd700;
+    background: #fffbe8;
+    color: #543804;
+    font-family: 'Comic Sans MS', 'Comic Sans', 'Arial Rounded MT Bold', Arial, sans-serif;
+    box-shadow: 0 2px 8px #ffd70033;
+    font-weight: bold;
+    transition: box-shadow 0.2s, border 0.2s;
+    outline: none;
+    margin-left: 10px;
+    cursor: pointer;
+  }
+  #difficulty-select:focus, #difficulty-select:hover {
+    box-shadow: 0 0 16px 4px #ffd700, 0 4px 16px #ffe066aa;
+    border: 2.5px solid #543804;
+  }
+</style>
 </html>
